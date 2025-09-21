@@ -1,0 +1,9 @@
+{
+  "name": "vlife",
+  "private": true,
+  "workspaces": ["api", "web"],
+  "scripts": {
+    "dev": "npm -w api run dev & npm -w web run dev",
+    "build": "npm -w api run build && npm -w web run build"
+  }
+}

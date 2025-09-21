@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  vlife-db:
+    image: postgres:15
+    container_name: vlife-db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vlife
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  vlife-api:
+    build: ./api
+    container_name: vlife-api
+    env_file: .env
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./api:/app
+      - ./storage:/app/storage
+    depends_on:
+      - vlife-db
+
+  vlife-web:
+    build: ./web
+    container_name: vlife-web
+    environment:
+      - VITE_API_URL=http://localhost:4000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/app
+    depends_on:
+      - vlife-api
+
+volumes:
+  db_data:

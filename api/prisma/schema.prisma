@@ -1,1 +1,52 @@
-.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  videos    Video[]
+  likes     Like[]
+  comments  Comment[]
+}
+
+model Video {
+  id         String   @id @default(cuid())
+  title      String
+  type       String   // "360" | "flat"
+  hlsPath    String   // directory containing .m3u8 & segments
+  posterUrl  String?
+  duration   Int?     // seconds
+  creatorId  String
+  createdAt  DateTime @default(now())
+  creator    User     @relation(fields: [creatorId], references: [id])
+  likes      Like[]
+  comments   Comment[]
+}
+
+model Like {
+  id      String @id @default(cuid())
+  userId  String
+  videoId String
+  user    User   @relation(fields: [userId], references: [id])
+  video   Video  @relation(fields: [videoId], references: [id])
+  @@unique([userId, videoId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  userId    String
+  videoId   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  video     Video    @relation(fields: [videoId], references: [id])
+}

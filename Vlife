@@ -1,0 +1,8 @@
+api/
+web/
+storage/
+docker-compose.yml
+package.json
+.env.example
+README.md
+.gitignore
